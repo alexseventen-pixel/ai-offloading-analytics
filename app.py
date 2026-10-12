@@ -4,8 +4,11 @@ Pages: Home (KPIs) | Dashboard (filters + charts + statistics) | Records (CRUD) 
 Predict (risk of low attention / low critical thinking) | Model (evaluation) | Data (pipeline & quality)
 Run:  python app.py   ->  http://127.0.0.1:5000
 """
+import hashlib
 import io
+import json
 import math
+import threading
 from pathlib import Path
 
 import pandas as pd
@@ -73,29 +76,82 @@ def home():
     return render_template("home.html", k=kpis(df), m=METRICS)
 
 
+CHART_CACHE_DIR = Path(__file__).parent / "data" / "chart_cache"
+_mem_cache = {}
+_cache_lock = threading.Lock()
+
+
+def _chart_key(full, f):
+    """Key = filter params + fingerprint of the data (CRUD edits invalidate)."""
+    data_hash = str(int(pd.util.hash_pandas_object(full, index=False).sum()))
+    raw = json.dumps(f, sort_keys=True) + "|" + data_hash
+    return hashlib.md5(raw.encode()).hexdigest()
+
+
+def _build_charts(df, ref):
+    return {
+        "freq": charts.likert_bar(df, "q4_ai_frequency", "Q4 AI use frequency for homework"),
+        "time": charts.likert_bar(df, "q7_daily_ai_time", "Q7 Daily time using AI"),
+        "tool": charts.cat_barh(df, "main_ai_tool", "Main AI tool (Q3)"),
+        "purpose": charts.cat_barh(df, "main_purpose", "Main purpose of AI use (Q6)"),
+        "q8": charts.likert_bar(df, "q8_ask_ai_first", "Q8 Ask AI first"),
+        "q9": charts.likert_bar(df, "q9_copy_directly", "Q9 Copy AI text directly"),
+        "q10": charts.likert_bar(df, "q10_rewrite_own_words", "Q10 Rewrite in own words"),
+        "q11": charts.likert_bar(df, "q11_check_correctness", "Q11 Check AI correctness"),
+        "hist": charts.offload_hist(df),
+        "sc_att": charts.scatter(df, "attention_index", "Attention index"),
+        "sc_ct": charts.scatter(df, "ct_total", "Critical thinking /8"),
+        "heat": charts.corr_heatmap(df),
+        "groups": charts.group_bars(df),
+        "luria": charts.luria_curve(df, ref),
+    }
+
+
+def _dashboard_charts(full, df, f, ref):
+    """Charts cached in memory + on disk (JSON of base64 PNGs) keyed by filters/data."""
+    if len(df) < 5:
+        return {}
+    key = _chart_key(full, f)
+    with _cache_lock:
+        if key in _mem_cache:
+            return _mem_cache[key]
+        path = CHART_CACHE_DIR / f"{key}.json"
+        if path.exists():
+            try:
+                img = json.loads(path.read_text())
+                _mem_cache[key] = img
+                return img
+            except Exception:
+                pass
+        img = _build_charts(df, ref)
+        _mem_cache[key] = img
+        try:
+            CHART_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(img))
+        except OSError:
+            pass
+        return img
+
+
+def _warm_dashboard_cache():
+    try:
+        full = db.load_df()
+        f = {k: "" for k in ("grade", "gender", "tool", "group", "purpose")}
+        ref = pd.read_csv(REF_PATH) if REF_PATH.exists() else None
+        _dashboard_charts(full, full, f, ref)
+    except Exception as e:  # never block startup
+        print("chart cache warm-up failed:", e)
+
+
+threading.Thread(target=_warm_dashboard_cache, daemon=True).start()
+
+
 @app.route("/dashboard")
 def dashboard():
     full = db.load_df()
     df, f = apply_filters(full, request.args)
     ref = pd.read_csv(REF_PATH) if REF_PATH.exists() else None
-    img = {}
-    if len(df) >= 5:
-        img = {
-            "freq": charts.likert_bar(df, "q4_ai_frequency", "Q4 AI use frequency for homework"),
-            "time": charts.likert_bar(df, "q7_daily_ai_time", "Q7 Daily time using AI"),
-            "tool": charts.cat_barh(df, "main_ai_tool", "Main AI tool (Q3)"),
-            "purpose": charts.cat_barh(df, "main_purpose", "Main purpose of AI use (Q6)"),
-            "q8": charts.likert_bar(df, "q8_ask_ai_first", "Q8 Ask AI first"),
-            "q9": charts.likert_bar(df, "q9_copy_directly", "Q9 Copy AI text directly"),
-            "q10": charts.likert_bar(df, "q10_rewrite_own_words", "Q10 Rewrite in own words"),
-            "q11": charts.likert_bar(df, "q11_check_correctness", "Q11 Check AI correctness"),
-            "hist": charts.offload_hist(df),
-            "sc_att": charts.scatter(df, "attention_index", "Attention index"),
-            "sc_ct": charts.scatter(df, "ct_total", "Critical thinking /8"),
-            "heat": charts.corr_heatmap(df),
-            "groups": charts.group_bars(df),
-            "luria": charts.luria_curve(df, ref),
-        }
+    img = _dashboard_charts(full, df, f, ref)
     return render_template("dashboard.html", f=f, k=kpis(df), img=img, total=len(full),
                            corr=analysis.correlations(df) if len(df) >= 5 else [],
                            crit=analysis.critical_r(len(df)) if len(df) > 3 else None,

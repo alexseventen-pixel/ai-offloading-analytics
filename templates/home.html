@@ -20,4 +20,8 @@ Attention and Critical Thinking in a Latvian International School”</i>: the 12
 <div class="card"><h2>Records (CRUD)</h2><p>Create, read, update and delete student questionnaire + test records stored in SQLite. Derived scores recalculated automatically.</p><a class="btn" href="{{ url_for('records') }}">Open</a></div>
 <div class="card"><h2>Risk prediction</h2><p>ML models flag risk of low attention / low critical thinking from AI-use answers only — before testing.
 Best models: {{ m.targets.low_attention.best_model if m else '' }} / {{ m.targets.low_ct.best_model if m else '' }}.</p><a class="btn" href="{{ url_for('predict') }}">Open</a></div>
-</div>{% endblock %}
+</div><script>
+document.querySelectorAll('a.btn').forEach(function(a){a.addEventListener('click',function(){
+a.classList.add('loading');a.textContent='Loading…';});});
+window.addEventListener('pageshow',function(){document.querySelectorAll('a.btn.loading').forEach(function(a){a.classList.remove('loading');a.textContent='Open';});});
+</script>{% endblock %}

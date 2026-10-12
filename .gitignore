@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 deliverables/build/
 *.log
+data/chart_cache/
