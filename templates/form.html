@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block content %}
+<h1>{{ 'New student record' if mode=='new' else 'Edit record ' ~ rec.student_id }}</h1>
+{% for e in errors %}<div class="flash err">{{ e }}</div>{% endfor %}
+<form method="post" class="card">{% include "_fields.html" %}
+<h2>Cognitive test results</h2><div class="formgrid">
+{% for f, lab in [('luria_trial1','Luria trial 1 (0–10)'),('luria_trial2','Luria trial 2 (0–10)'),('luria_trial3','Luria trial 3 (0–10)'),('luria_delayed','Luria delayed recall (0–10)'),
+('schulte_seconds','Schulte mean time (s)'),('digit_span_total','Digit Span total'),('ct_detection','CT detection (0–4)'),('ct_justification','CT justification (0–4)')] %}
+<div><label>{{ lab }}</label><input type="number" step="{{ numeric[f][2] }}" min="{{ numeric[f][0] }}" max="{{ numeric[f][1] }}" name="{{ f }}" value="{{ rec[f] if rec[f] is not none else '' }}"></div>{% endfor %}</div>
+<p class="muted">Offloading score, attention index, CT total and risk flags are derived automatically on save.</p>
+<button class="btn">Save</button> <a class="btn sec" href="{{ url_for('records') }}">Cancel</a></form>{% endblock %}

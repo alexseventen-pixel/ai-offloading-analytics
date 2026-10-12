@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block content %}
+<h1>Record {{ rec.student_id }} <span class="muted">grade {{ rec.grade }} · {{ rec.gender or '–' }} · updated {{ rec.updated_at }}</span></h1>
+<div class="kpis">
+<div class="kpi"><div class="v">{{ rec.offloading_score|fmt }}</div><div class="l">AI Offloading Score (1–5) · {{ rec.ai_use_group }} AI use</div></div>
+<div class="kpi"><div class="v">{{ rec.attention_index|fmt(1) }}</div><div class="l">Attention index {% if rec.low_attention == 1 %}<span class="badge High">LOW</span>{% endif %}</div></div>
+<div class="kpi"><div class="v">{{ rec.ct_total|fmt(0) }}/8</div><div class="l">Critical thinking {% if rec.low_ct == 1 %}<span class="badge High">LOW</span>{% endif %}</div></div>
+<div class="kpi"><div class="v"><span class="badge {{ pred.low_attention.risk }}">{{ pred.low_attention.risk }}</span></div><div class="l">Model risk: low attention (p={{ pred.low_attention.probability }})</div></div>
+<div class="kpi"><div class="v"><span class="badge {{ pred.low_ct.risk }}">{{ pred.low_ct.risk }}</span></div><div class="l">Model risk: low CT (p={{ pred.low_ct.probability }})</div></div></div>
+<div class="grid2"><div class="card"><h2 style="margin-top:0">Questionnaire</h2><table>
+<tr><td>Main tool / subject / purpose</td><td>{{ rec.main_ai_tool }} / {{ rec.main_subject or '–' }} / {{ rec.main_purpose }}</td></tr>
+{% for f, labels in likert.items() %}<tr><td>{{ qtext[f] }}</td><td>{% if rec[f] is not none %}{{ rec[f]|int }} – {{ labels[rec[f]|int - 1] }}{% else %}–{% endif %}</td></tr>{% endfor %}
+<tr><td>Screen time / sleep</td><td>{{ rec.screen_time_hours|fmt(1) }} h / {{ rec.sleep_hours|fmt(1) }} h</td></tr></table></div>
+<div class="card"><h2 style="margin-top:0">Cognitive tests</h2><table>
+<tr><td>Luria 10 Words T1 / T2 / T3 / delayed</td><td>{{ rec.luria_trial1 }} / {{ rec.luria_trial2 }} / {{ rec.luria_trial3 }} / {{ rec.luria_delayed }}</td></tr>
+<tr><td>Schulte mean time</td><td>{{ rec.schulte_seconds|fmt(1) }} s ({{ 'strong' if rec.schulte_seconds is not none and rec.schulte_seconds < 45 else 'average' if rec.schulte_seconds is not none and rec.schulte_seconds <= 60 else 'below average' }})</td></tr>
+<tr><td>Digit Span total</td><td>{{ rec.digit_span_total|fmt(0) }}</td></tr>
+<tr><td>Critical thinking detection / justification</td><td>{{ rec.ct_detection }} / {{ rec.ct_justification }}</td></tr></table></div></div>
+<a class="btn" href="{{ url_for('record_edit', sid=rec.student_id) }}">Edit</a>
+<form method="post" action="{{ url_for('record_delete', sid=rec.student_id) }}" style="display:inline" onsubmit="return confirm('Delete {{ rec.student_id }}?')"><button class="btn danger">Delete</button></form>
+<a class="btn sec" href="{{ url_for('records') }}">Back to list</a>{% endblock %}

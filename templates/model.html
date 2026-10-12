@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block content %}
+<h1>Model evaluation <form method="post" style="float:right"><button class="btn">Retrain on current DB ({{ m.n_records }} rows used last time)</button></form></h1>
+<div class="card muted">Inputs: {{ m.features|join(', ') }}. Pipeline: median / mode imputation → standard scaling → one-hot encoding → classifier.
+Stratified 75/25 split + 5-fold stratified cross-validation. Positive class = at-risk student. Best model chosen by F1 on the test set.</div>
+{% for t, r in m.targets.items() %}
+<h2>{{ r.label }} <span class="muted">positive rate {{ (r.positive_rate*100)|round(1) }}% · train {{ r.n_train }} / test {{ r.n_test }} · best: {{ r.best_model }}</span></h2>
+<div class="card"><table><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>F1 macro</th><th>ROC-AUC</th><th>CV5 F1</th><th>CV5 AUC</th></tr>
+{% for name, v in r.models.items() %}<tr><td>{{ name }}{% if name == r.best_model %} ★{% endif %}</td><td>{{ v.accuracy }}</td><td>{{ v.precision|fmt(4) }}</td><td>{{ v.recall|fmt(4) }}</td><td>{{ v.f1 }}</td>
+<td>{{ v.f1_macro|fmt(4) }}</td><td>{{ v.roc_auc|fmt(4) }}</td><td>{{ v.cv5_f1|fmt(4) }}</td><td>{{ v.cv5_roc_auc|fmt(4) }}</td></tr>{% endfor %}</table></div>
+<div class="grid3"><div class="card"><img src="data:image/png;base64,{{ img[t].cm }}"></div><div class="card"><img src="data:image/png;base64,{{ img[t].coef }}"></div>
+<div class="card"><img src="data:image/png;base64,{{ img[t].imp }}"></div></div>{% endfor %}{% endblock %}

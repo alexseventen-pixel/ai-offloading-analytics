@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block content %}
+<h1>Student AI-Use &amp; Cognitive Offloading Analytics</h1>
+<div class="card"><p>Decision-support tool for teachers and school leadership of a Latvian international school (grades 8–9).
+It operationalises the Master's thesis <i>“Use of AI Tools and Cognitive Offloading among 8th and 9th Grade Students: Associations with
+Attention and Critical Thinking in a Latvian International School”</i>: the 12-item AI-use questionnaire, the AI Offloading Composite Score
+(Q4, Q8, Q9, Q10r, Q11r, Q12r), Luria's 10 Words Test, Schulte Tables, Digit Span and the Critical Thinking “Survival Story” task.</p>
+<p><b>Research hypothesis (thesis):</b> higher AI-based cognitive offloading is associated with lower attention and critical thinking scores.</p></div>
+<div class="kpis">
+<div class="kpi"><div class="v">{{ k.n }}</div><div class="l">Student records</div></div>
+<div class="kpi"><div class="v">{{ k.users }}</div><div class="l">Use AI for homework</div></div>
+<div class="kpi"><div class="v">{{ k.chatgpt }}</div><div class="l">ChatGPT as main tool</div></div>
+<div class="kpi"><div class="v">{{ k.offload|fmt }}</div><div class="l">Mean offloading score (1–5)</div></div>
+<div class="kpi"><div class="v">{{ k.attention|fmt(1) }}</div><div class="l">Mean attention index (0–100)</div></div>
+<div class="kpi"><div class="v">{{ k.ct|fmt }}</div><div class="l">Mean critical thinking (/8)</div></div>
+<div class="kpi" style="border-color:#c4453c"><div class="v">{{ k.low_att }}</div><div class="l">Low attention flag</div></div>
+<div class="kpi" style="border-color:#c4453c"><div class="v">{{ k.low_ct }}</div><div class="l">Low critical thinking flag</div></div>
+</div>
+<div class="grid3">
+<div class="card"><h2>Dashboard</h2><p>AI-use patterns, offloading profile, correlations (Pearson r with p-values), Low vs Higher AI-use group comparison.</p><a class="btn" href="{{ url_for('dashboard') }}">Open</a></div>
+<div class="card"><h2>Records (CRUD)</h2><p>Create, read, update and delete student questionnaire + test records stored in SQLite. Derived scores recalculated automatically.</p><a class="btn" href="{{ url_for('records') }}">Open</a></div>
+<div class="card"><h2>Risk prediction</h2><p>ML models flag risk of low attention / low critical thinking from AI-use answers only — before testing.
+Best models: {{ m.targets.low_attention.best_model if m else '' }} / {{ m.targets.low_ct.best_model if m else '' }}.</p><a class="btn" href="{{ url_for('predict') }}">Open</a></div>
+</div>{% endblock %}

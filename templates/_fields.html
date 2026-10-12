@@ -1,0 +1,12 @@
+<h2>Demographics &amp; context</h2><div class="formgrid">
+<div><label>Grade (Q1) *</label><select name="grade">{% for g in [8,9] %}<option {{ 'selected' if rec.grade|int == g }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>Gender</label><select name="gender"><option value="">–</option>{% for g in cats.gender %}<option {{ 'selected' if rec.gender==g }}>{{ g }}</option>{% endfor %}</select></div>
+{% if not predict_mode %}<div><label>Age</label><input type="number" name="age" min="12" max="16" value="{{ rec.age|int if rec.age is not none else '' }}"></div>{% endif %}
+<div><label>Main AI tool (Q3)</label><select name="main_ai_tool"><option value="">–</option>{% for g in cats.main_ai_tool %}<option {{ 'selected' if rec.main_ai_tool==g }}>{{ g }}</option>{% endfor %}</select></div>
+{% if not predict_mode %}<div><label>Main subject (Q5)</label><select name="main_subject"><option value="">–</option>{% for g in cats.main_subject %}<option {{ 'selected' if rec.main_subject==g }}>{{ g }}</option>{% endfor %}</select></div>{% endif %}
+<div><label>Main purpose (Q6)</label><select name="main_purpose"><option value="">–</option>{% for g in cats.main_purpose %}<option {{ 'selected' if rec.main_purpose==g }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>Recreational screen time (h/day)</label><input type="number" step="0.1" min="0" max="12" name="screen_time_hours" value="{{ rec.screen_time_hours if rec.screen_time_hours is not none else '' }}"></div>
+<div><label>Sleep (h/night)</label><input type="number" step="0.1" min="3" max="12" name="sleep_hours" value="{{ rec.sleep_hours if rec.sleep_hours is not none else '' }}"></div></div>
+<h2>AI-use questionnaire</h2><div class="formgrid">
+{% for f, labels in likert.items() %}<div><label>{{ qtext[f] }}</label><select name="{{ f }}"><option value="">–</option>
+{% for l in labels %}<option value="{{ loop.index }}" {{ 'selected' if rec[f] is not none and rec[f]|int == loop.index }}>{{ loop.index }} – {{ l }}</option>{% endfor %}</select></div>{% endfor %}</div>

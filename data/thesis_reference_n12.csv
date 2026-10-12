@@ -1,0 +1,13 @@
+student,luria_trial1,luria_trial2,luria_trial3,luria_delayed,curve_trend,ct_detection,ct_justification,ct_total
+Student 1,10,8,9,8,Flat,4,4,8
+Student 2,8,10,10,8,Improving,4,4,8
+Student 3,5,7,4,6,Flat,3,3,6
+Student 4,6,4,6,4,Flat,4,3,7
+Student 5,10,10,10,8,Improving,3,2,5
+Student 6,4,5,4,4,Flat,2,2,4
+Student 7,5,7,8,6,Improving,0,0,0
+Student 8,6,6,6,5,Improving,3,3,6
+Student 9,6,6,6,5,Improving,3,2,5
+Student 10,7,7,6,7,Declining,3,3,6
+Student 11,8,9,8,7,Flat,4,3,7
+Student 12,7,6,5,5,Declining,3,2,5

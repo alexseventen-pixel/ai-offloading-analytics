@@ -1,0 +1,295 @@
+{
+  "n_records": 180,
+  "features": [
+    "gender",
+    "main_ai_tool",
+    "main_purpose",
+    "grade",
+    "q4_ai_frequency",
+    "q7_daily_ai_time",
+    "q8_ask_ai_first",
+    "q9_copy_directly",
+    "q10_rewrite_own_words",
+    "q11_check_correctness",
+    "q12_could_do_without_ai",
+    "offloading_score",
+    "screen_time_hours",
+    "sleep_hours"
+  ],
+  "targets": {
+    "low_attention": {
+      "label": "Low attention (attention index < 55)",
+      "positive_rate": 0.25,
+      "n_train": 135,
+      "n_test": 45,
+      "models": {
+        "Logistic Regression": {
+          "accuracy": 0.8444,
+          "precision": 0.6111,
+          "recall": 1.0,
+          "f1": 0.7586,
+          "f1_macro": 0.8219,
+          "roc_auc": 0.9572,
+          "cv5_f1": 0.6648,
+          "cv5_roc_auc": 0.8214,
+          "confusion_matrix": [
+            [
+              27,
+              7
+            ],
+            [
+              0,
+              11
+            ]
+          ]
+        },
+        "Random Forest": {
+          "accuracy": 0.7778,
+          "precision": 0.5333,
+          "recall": 0.7273,
+          "f1": 0.6154,
+          "f1_macro": 0.7296,
+          "roc_auc": 0.9171,
+          "cv5_f1": 0.5956,
+          "cv5_roc_auc": 0.8255,
+          "confusion_matrix": [
+            [
+              27,
+              7
+            ],
+            [
+              3,
+              8
+            ]
+          ]
+        },
+        "Majority baseline": {
+          "accuracy": 0.7556,
+          "f1": 0.0
+        }
+      },
+      "best_model": "Logistic Regression",
+      "lr_coefficients": [
+        [
+          "main_purpose_Summary",
+          -0.969
+        ],
+        [
+          "main_ai_tool_Translation AI",
+          0.744
+        ],
+        [
+          "sleep_hours",
+          -0.73
+        ],
+        [
+          "main_ai_tool_Grammar AI",
+          -0.698
+        ],
+        [
+          "q4_ai_frequency",
+          0.621
+        ],
+        [
+          "main_purpose_Ideas / outline",
+          0.597
+        ],
+        [
+          "main_ai_tool_ChatGPT",
+          0.569
+        ],
+        [
+          "q12_could_do_without_ai",
+          -0.512
+        ],
+        [
+          "main_ai_tool_Gemini",
+          -0.459
+        ],
+        [
+          "main_purpose_Full answer",
+          0.426
+        ]
+      ],
+      "rf_importances": [
+        [
+          "screen_time_hours",
+          0.1546
+        ],
+        [
+          "offloading_score",
+          0.1487
+        ],
+        [
+          "sleep_hours",
+          0.1259
+        ],
+        [
+          "q4_ai_frequency",
+          0.0949
+        ],
+        [
+          "q7_daily_ai_time",
+          0.0809
+        ],
+        [
+          "q12_could_do_without_ai",
+          0.0774
+        ],
+        [
+          "q8_ask_ai_first",
+          0.0517
+        ],
+        [
+          "q9_copy_directly",
+          0.0458
+        ],
+        [
+          "q11_check_correctness",
+          0.0321
+        ],
+        [
+          "q10_rewrite_own_words",
+          0.0306
+        ]
+      ]
+    },
+    "low_ct": {
+      "label": "Low critical thinking (CT total <= 4/8)",
+      "positive_rate": 0.367,
+      "n_train": 135,
+      "n_test": 45,
+      "models": {
+        "Logistic Regression": {
+          "accuracy": 0.6667,
+          "precision": 0.5263,
+          "recall": 0.625,
+          "f1": 0.5714,
+          "f1_macro": 0.6494,
+          "roc_auc": 0.7672,
+          "cv5_f1": 0.6825,
+          "cv5_roc_auc": 0.8206,
+          "confusion_matrix": [
+            [
+              20,
+              9
+            ],
+            [
+              6,
+              10
+            ]
+          ]
+        },
+        "Random Forest": {
+          "accuracy": 0.7333,
+          "precision": 0.6111,
+          "recall": 0.6875,
+          "f1": 0.6471,
+          "f1_macro": 0.7164,
+          "roc_auc": 0.7543,
+          "cv5_f1": 0.6849,
+          "cv5_roc_auc": 0.7963,
+          "confusion_matrix": [
+            [
+              22,
+              7
+            ],
+            [
+              5,
+              11
+            ]
+          ]
+        },
+        "Majority baseline": {
+          "accuracy": 0.6444,
+          "f1": 0.0
+        }
+      },
+      "best_model": "Random Forest",
+      "lr_coefficients": [
+        [
+          "q12_could_do_without_ai",
+          -0.815
+        ],
+        [
+          "main_ai_tool_Gemini",
+          -0.705
+        ],
+        [
+          "main_purpose_Full answer",
+          0.592
+        ],
+        [
+          "main_purpose_Ideas / outline",
+          -0.574
+        ],
+        [
+          "main_ai_tool_Copilot",
+          0.572
+        ],
+        [
+          "main_purpose_Solving tasks",
+          0.448
+        ],
+        [
+          "q8_ask_ai_first",
+          -0.447
+        ],
+        [
+          "main_ai_tool_ChatGPT",
+          -0.386
+        ],
+        [
+          "main_purpose_Translation",
+          -0.366
+        ],
+        [
+          "q11_check_correctness",
+          -0.347
+        ]
+      ],
+      "rf_importances": [
+        [
+          "offloading_score",
+          0.198
+        ],
+        [
+          "q12_could_do_without_ai",
+          0.1375
+        ],
+        [
+          "q11_check_correctness",
+          0.0816
+        ],
+        [
+          "screen_time_hours",
+          0.0775
+        ],
+        [
+          "q4_ai_frequency",
+          0.0701
+        ],
+        [
+          "q9_copy_directly",
+          0.0656
+        ],
+        [
+          "sleep_hours",
+          0.049
+        ],
+        [
+          "q10_rewrite_own_words",
+          0.0403
+        ],
+        [
+          "q7_daily_ai_time",
+          0.0397
+        ],
+        [
+          "q8_ask_ai_first",
+          0.0364
+        ]
+      ]
+    }
+  }
+}

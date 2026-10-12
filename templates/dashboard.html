@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block content %}
+<h1>Dashboard <span class="muted">{{ k.n }} of {{ total }} records</span></h1>
+{% include "_filters.html" %}
+<div class="kpis">
+<div class="kpi"><div class="v">{{ k.offload|fmt }}</div><div class="l">Mean offloading (thesis n=12: 2.00)</div></div>
+<div class="kpi"><div class="v">{{ k.copy_rare }}</div><div class="l">Never/rarely copy AI (thesis: 92%)</div></div>
+<div class="kpi"><div class="v">{{ k.attention|fmt(1) }}</div><div class="l">Mean attention index</div></div>
+<div class="kpi"><div class="v">{{ k.ct|fmt }}</div><div class="l">Mean CT total (thesis: 5.6)</div></div>
+<div class="kpi"><div class="v">{{ k.low_att }}</div><div class="l">Low attention</div></div>
+<div class="kpi"><div class="v">{{ k.low_ct }}</div><div class="l">Low critical thinking</div></div>
+</div>
+{% if not img %}<div class="note">Not enough records for charts (need ≥ 5). Relax the filters.</div>{% else %}
+<h2>1. AI use patterns (questionnaire Q3–Q7)</h2>
+<div class="grid2"><div class="card"><img src="data:image/png;base64,{{ img.freq }}"></div><div class="card"><img src="data:image/png;base64,{{ img.time }}"></div>
+<div class="card"><img src="data:image/png;base64,{{ img.tool }}"></div><div class="card"><img src="data:image/png;base64,{{ img.purpose }}"></div></div>
+<h2>2. Cognitive offloading behaviour (Q8–Q11) and composite score</h2>
+<div class="grid2"><div class="card"><img src="data:image/png;base64,{{ img.q8 }}"></div><div class="card"><img src="data:image/png;base64,{{ img.q9 }}"></div>
+<div class="card"><img src="data:image/png;base64,{{ img.q10 }}"></div><div class="card"><img src="data:image/png;base64,{{ img.q11 }}"></div>
+<div class="card"><img src="data:image/png;base64,{{ img.hist }}"></div>
+<div class="card"><h3 style="margin-top:0">Behavioural indicators by AI-use group (cf. thesis Table 4.3)</h3>
+<table><tr><th>Indicator</th><th>Low AI use</th><th>Higher AI use</th></tr>{% for r in profile %}<tr><td>{{ r.indicator }}</td><td>{{ r.Low }}</td><td>{{ r.Higher }}</td></tr>{% endfor %}</table></div></div>
+<h2>3. Offloading vs attention and critical thinking (hypothesis test)</h2>
+<div class="grid2"><div class="card"><img src="data:image/png;base64,{{ img.sc_att }}"></div><div class="card"><img src="data:image/png;base64,{{ img.sc_ct }}"></div></div>
+<div class="card"><h3 style="margin-top:0">Pearson correlation: AI Offloading Score vs cognitive scores (cf. thesis Table 4.7)</h3>
+<table><tr><th>Variable</th><th>n</th><th>Pearson r</th><th>Spearman ρ</th><th>p</th><th>Interpretation</th></tr>
+{% for r in corr %}<tr><td>{{ r.variable }}</td><td>{{ r.n }}</td><td>{{ r.r }}</td><td>{{ r.rho }}</td><td>{{ r.p|pval }}</td><td>{{ r.interpretation }}</td></tr>{% endfor %}</table>
+<p class="muted">Critical |r| for p &lt; 0.05 with n = {{ k.n }}: {{ crit }} (thesis, n = 12: 0.576). Schulte is a time score, so a positive r means worse attention.</p></div>
+<div class="grid2"><div class="card"><img src="data:image/png;base64,{{ img.groups }}"></div><div class="card"><img src="data:image/png;base64,{{ img.luria }}"></div></div>
+<div class="card"><h3 style="margin-top:0">Low vs Higher AI-use group – Welch t-test (cf. thesis Table 4.8)</h3>
+<table><tr><th>Indicator</th><th>Low AI use</th><th>Higher AI use</th><th>n (L/H)</th><th>Cohen's d</th><th>p</th></tr>
+{% for r in groups %}<tr><td>{{ r.indicator }}</td><td>{{ r.low }}</td><td>{{ r.higher }}</td><td>{{ r.n_low }}/{{ r.n_high }}</td><td>{{ r.d }}</td><td>{{ r.p|pval }}</td></tr>{% endfor %}</table></div>
+<h2>4. Correlation matrix</h2><div class="card" style="text-align:center"><img src="data:image/png;base64,{{ img.heat }}" style="max-width:760px"></div>
+{% endif %}
+<a class="btn sec" href="{{ url_for('export_csv', **request.args) }}">Export filtered data (CSV)</a>
+{% endblock %}

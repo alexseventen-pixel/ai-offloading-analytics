@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block content %}
+<h1>Data &amp; pipeline</h1>
+<div class="card"><h2 style="margin-top:0">Pipeline</h2><ol>
+<li><b>Generation</b> – <code>generate_dataset.py</code> simulates {{ n_raw }} students (seed 2026) using the thesis instruments; ~3% missing answers injected.</li>
+<li><b>Load</b> – CSV → SQLite table <code>students</code> (<code>db.init_db</code>); currently {{ n_db }} rows in DB.</li>
+<li><b>Derivation</b> – offloading composite (Q4, Q8, Q9, 6−Q10, 6−Q11, 6−Q12; computed if ≥ 4 of 6 items present), Low/Higher AI-use group (Q4 split), CT total, attention index, risk flags.</li>
+<li><b>Cleaning for ML</b> – median imputation (numeric), most-frequent imputation (categorical), z-scaling, one-hot encoding inside a scikit-learn Pipeline (no leakage).</li>
+<li><b>Analysis</b> – Pearson/Spearman correlations, Welch t-test, Cohen's d (<code>analysis.py</code>); classifiers (<code>ml.py</code>).</li></ol>
+<a class="btn sec" href="{{ url_for('export_csv') }}">Download DB as CSV</a> <a class="btn sec" href="{{ url_for('api_records') }}">JSON API</a></div>
+<div class="grid2"><div class="card"><h2 style="margin-top:0">Missing values in raw CSV</h2><table><tr><th>Column</th><th>Missing</th><th>%</th></tr>
+{% for r in missing %}<tr><td>{{ r.column }}</td><td>{{ r.missing }}</td><td>{{ r.pct }}</td></tr>{% endfor %}</table></div>
+<div class="card"><h2 style="margin-top:0">Descriptive statistics</h2><table><tr><th>Variable</th><th>n</th><th>mean</th><th>SD</th><th>min</th><th>max</th></tr>
+{% for r in desc %}<tr><td>{{ r['index'] }}</td><td>{{ r['count']|int }}</td><td>{{ r['mean'] }}</td><td>{{ r['std'] }}</td><td>{{ r['min'] }}</td><td>{{ r['max'] }}</td></tr>{% endfor %}</table></div></div>
+<div class="card"><h2 style="margin-top:0">Thesis empirical reference (n = 12, Tables 4.4 &amp; 4.6) vs simulation</h2>
+<p>Means – thesis: Luria T1 {{ ref_means.luria_trial1 }}, delayed {{ ref_means.luria_delayed }}, CT {{ ref_means.ct_total }} · simulation: Luria T1 {{ sim_means.luria_trial1 }}, delayed {{ sim_means.luria_delayed }}, CT {{ sim_means.ct_total }}</p>
+<table><tr><th>Student</th><th>T1</th><th>T2</th><th>T3</th><th>Delayed</th><th>Curve</th><th>CT detect</th><th>CT justify</th><th>CT total</th></tr>
+{% for r in ref %}<tr><td>{{ r.student }}</td><td>{{ r.luria_trial1 }}</td><td>{{ r.luria_trial2 }}</td><td>{{ r.luria_trial3 }}</td><td>{{ r.luria_delayed }}</td><td>{{ r.curve_trend }}</td><td>{{ r.ct_detection }}</td><td>{{ r.ct_justification }}</td><td>{{ r.ct_total }}</td></tr>{% endfor %}</table></div>
+<div class="card muted">Columns: {{ cols|join(', ') }}</div>{% endblock %}

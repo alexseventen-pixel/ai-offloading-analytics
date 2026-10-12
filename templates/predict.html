@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block content %}
+<h1>Risk prediction from AI-use behaviour</h1>
+<div class="note">Enter questionnaire answers only (no test scores). The models estimate the probability that this student would fall into the
+<b>low attention</b> (index &lt; 55) or <b>low critical thinking</b> (≤ 4/8) group. Screening aid for teachers, not a diagnosis.</div>
+{% for e in errors %}<div class="flash err">{{ e }}</div>{% endfor %}
+<div class="grid2"><form method="post" class="card">{% set predict_mode = true %}{% include "_fields.html" %}<br><button class="btn">Predict risk</button></form>
+<div class="card">{% if result %}<h2 style="margin-top:0">Result</h2>
+<p>AI Offloading Score: <b>{{ result.offloading_score|fmt }}</b> / 5 (thesis sample mean 2.0)</p>
+<table><tr><th>Outcome</th><th>Probability</th><th>Risk</th></tr>
+<tr><td>Low attention</td><td>{{ (result.low_attention.probability*100)|round(1) }}%</td><td><span class="badge {{ result.low_attention.risk }}">{{ result.low_attention.risk }}</span></td></tr>
+<tr><td>Low critical thinking</td><td>{{ (result.low_ct.probability*100)|round(1) }}%</td><td><span class="badge {{ result.low_ct.risk }}">{{ result.low_ct.risk }}</span></td></tr></table>
+<h2>Recommendations (thesis Ch. 5.3)</h2><ul>
+{% if result.low_attention.risk != 'Low' or result.low_ct.risk != 'Low' %}
+<li>Apply the <b>“think first, then verify with AI”</b> routine for homework.</li>
+<li>Assign tasks that require rewriting and fact-checking AI output (AI-literacy activity).</li>
+{% if rec.screen_time_hours and rec.screen_time_hours > 2 %}<li>Recreational screen time &gt; 2 h/day – the literature links it with a 51% higher risk of concentration difficulties; discuss limits with parents.</li>{% endif %}
+<li>Follow up with the Luria / Schulte / Survival Story assessment to confirm.</li>
+{% else %}<li>Reflective AI use profile – reinforce current habits (rewriting and checking AI output).</li>{% endif %}</ul>
+{% else %}<p class="muted">Fill in the form and press “Predict risk”.</p>{% endif %}</div></div>{% endblock %}

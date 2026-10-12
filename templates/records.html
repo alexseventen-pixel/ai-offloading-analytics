@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block content %}
+<h1>Student records <span class="muted">{{ n }} matching</span> <a class="btn" href="{{ url_for('record_new') }}" style="float:right">+ New record</a></h1>
+{% include "_filters.html" %}
+<div class="card"><table><tr><th>ID</th><th>Grade</th><th>Gender</th><th>Tool</th><th>Purpose</th><th>Q4 freq</th><th>Offloading</th><th>Attention</th><th>CT /8</th><th>Flags</th><th></th></tr>
+{% for r in rows %}<tr><td><a href="{{ url_for('record_view', sid=r.student_id) }}">{{ r.student_id }}</a></td><td>{{ r.grade }}</td><td>{{ r.gender }}</td>
+<td>{{ r.main_ai_tool }}</td><td>{{ r.main_purpose }}</td><td>{{ r.q4_ai_frequency|fmt(0) }}</td><td>{{ r.offloading_score|fmt }}</td><td>{{ r.attention_index|fmt(1) }}</td><td>{{ r.ct_total|fmt(0) }}</td>
+<td>{% if r.low_attention == 1 %}<span class="badge High">Att</span>{% endif %} {% if r.low_ct == 1 %}<span class="badge Medium">CT</span>{% endif %}</td>
+<td><a href="{{ url_for('record_edit', sid=r.student_id) }}">Edit</a></td></tr>{% endfor %}</table>
+<p class="pager">Page {{ page }} / {{ pages }} &nbsp; {% if page > 1 %}<a href="{{ url_for('records', page=page-1, **args) }}">‹ Prev</a>{% endif %}
+{% if page < pages %}<a href="{{ url_for('records', page=page+1, **args) }}">Next ›</a>{% endif %}</p></div>
+{% endblock %}

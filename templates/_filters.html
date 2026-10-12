@@ -1,0 +1,9 @@
+<form class="filters card" method="get">
+<div><label>Grade</label><select name="grade"><option value="">All</option>{% for g in [8,9] %}<option {{ 'selected' if f.grade==g|string }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>Gender</label><select name="gender"><option value="">All</option>{% for g in cats.gender %}<option {{ 'selected' if f.gender==g }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>Main AI tool</label><select name="tool"><option value="">All</option>{% for g in cats.main_ai_tool %}<option {{ 'selected' if f.tool==g }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>Main purpose</label><select name="purpose"><option value="">All</option>{% for g in cats.main_purpose %}<option {{ 'selected' if f.purpose==g }}>{{ g }}</option>{% endfor %}</select></div>
+<div><label>AI-use group (Q4 split)</label><select name="group"><option value="">All</option>{% for g in ['Low','Higher'] %}<option {{ 'selected' if f.group==g }}>{{ g }}</option>{% endfor %}</select></div>
+{% if risk is defined %}<div><label>Risk flag</label><select name="risk"><option value="">All</option><option value="attention" {{ 'selected' if risk=='attention' }}>Low attention</option><option value="ct" {{ 'selected' if risk=='ct' }}>Low critical thinking</option></select></div>
+<div><label>Student ID</label><input name="q" value="{{ q }}" placeholder="P10.."></div>{% endif %}
+<div><button class="btn">Apply</button> <a class="btn sec" href="{{ request.path }}">Reset</a></div></form>

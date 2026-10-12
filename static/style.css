@@ -1,0 +1,24 @@
+*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f6f9;color:#222}
+nav{background:#1f3b63;padding:0 20px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+nav .brand{color:#fff;font-weight:bold;margin-right:20px;padding:14px 0}
+nav a{color:#cfe0f5;text-decoration:none;padding:14px 12px}nav a:hover,nav a.active{background:#2f5a94;color:#fff}
+main{max-width:1250px;margin:20px auto;padding:0 20px}
+h1{font-size:22px;margin:8px 0 14px}h2{font-size:17px;margin:22px 0 10px;color:#1f3b63}
+.card{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:16px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:8px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:4px solid #2f6db5}
+.kpi .v{font-size:24px;font-weight:bold}.kpi .l{font-size:12px;color:#666}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
+img{max-width:100%}table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left}th{background:#eef2f7}
+tr:hover td{background:#fafbfd}.btn{display:inline-block;background:#2f6db5;color:#fff;border:0;border-radius:5px;
+padding:7px 14px;text-decoration:none;cursor:pointer;font-size:13px}.btn.sec{background:#6c7a89}.btn.danger{background:#c4453c}
+form.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:end}label{font-size:12px;color:#555;display:block}
+select,input{padding:6px;border:1px solid #c9ced6;border-radius:4px;font-size:13px}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.formgrid select,.formgrid input{width:100%}.flash{padding:10px 14px;border-radius:6px;margin-bottom:12px}
+.flash.ok{background:#e3f4e8;color:#1f6b3a}.flash.err{background:#fbe5e3;color:#8c2a22}
+.badge{padding:2px 8px;border-radius:10px;font-size:12px;color:#fff}.High{background:#c4453c}.Medium{background:#e0a02f}
+.Low{background:#3a9d5d}.muted{color:#777;font-size:12px}.note{background:#fff8e1;border-left:4px solid #e0a02f;padding:10px 14px;font-size:13px}
+.pager a{margin-right:6px}
